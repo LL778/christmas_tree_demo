@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python圣诞树</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        canvas {
+            display: block;
+        }
+        .text {
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            color: #fff;
+            font-size: 24px;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="text">Merry Christmas</div>
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 10000;
+        const treeColor = 'rgba(255, 100, 200, 0.8)';
+        const starColor = 'rgba(255, 255, 255, 0.6)';
+        const groundColor = 'rgba(255, 255, 255, 0.4)';
+
+        // 生成圣诞树粒子
+        for (let i = 0; i < particleCount; i++) {
+            let x, y, color;
+            if (i < particleCount * 0.7) {
+                // 树的主体
+                x = canvas.width / 2 + (Math.random() - 0.5) * canvas.width / 3;
+                y = canvas.height / 2 + Math.random() * canvas.height / 3;
+                color = treeColor;
+            } else if (i < particleCount * 0.9) {
+                // 地面
+                x = canvas.width / 2 + (Math.random() - 0.5) * canvas.width / 2;
+                y = canvas.height - Math.random() * canvas.height / 5;
+                color = groundColor;
+            } else {
+                // 星星
+                x = Math.random() * canvas.width;
+                y = Math.random() * canvas.height / 2;
+                color = starColor;
+            }
+            particles.push({
+                x,
+                y,
+                radius: Math.random() * 2 + 0.5,
+                color,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (const p of particles) {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+
+                p.x += p.vx;
+                p.y += p.vy;
+
+                // 边界检测
+                if (p.x < 0 || p.x > canvas.width) p.vx = -p.vx;
+                if (p.y < 0 || p.y > canvas.height) p.vy = -p.vy;
+            }
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        // 窗口大小变化时重置画布
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
