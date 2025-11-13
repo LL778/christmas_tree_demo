@@ -38,34 +38,56 @@
         const starColor = 'rgba(255, 255, 255, 0.6)';
         const groundColor = 'rgba(255, 255, 255, 0.4)';
 
-        // 生成圣诞树粒子
-        for (let i = 0; i < particleCount; i++) {
-            let x, y, color;
-            if (i < particleCount * 0.7) {
-                // 树的主体
-                x = canvas.width / 2 + (Math.random() - 0.5) * canvas.width / 3;
-                y = canvas.height / 2 + Math.random() * canvas.height / 3;
-                color = treeColor;
-            } else if (i < particleCount * 0.9) {
-                // 地面
-                x = canvas.width / 2 + (Math.random() - 0.5) * canvas.width / 2;
-                y = canvas.height - Math.random() * canvas.height / 5;
-                color = groundColor;
-            } else {
-                // 星星
-                x = Math.random() * canvas.width;
-                y = Math.random() * canvas.height / 2;
-                color = starColor;
-            }
-            particles.push({
-                x,
-                y,
-                radius: Math.random() * 2 + 0.5,
-                color,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: (Math.random() - 0.5) * 0.5
-            });
+       // 生成圣诞树粒子（修改后）
+for (let i = 0; i < particleCount; i++) {
+    let x, y, color;
+    // 计算圣诞树的锥形轮廓
+    const treeHeight = canvas.height * 0.6;
+    const treeBaseWidth = canvas.width * 0.4;
+    const treeTopY = canvas.height / 2 - treeHeight / 2;
+    
+    if (i < particleCount * 0.7) {
+        // 圣诞树主体（锥形分布）
+        const randomY = treeTopY + Math.random() * treeHeight;
+        // 越往下树越宽
+        const currentWidth = treeBaseWidth * (randomY - treeTopY) / treeHeight;
+        x = canvas.width / 2 + (Math.random() - 0.5) * currentWidth;
+        y = randomY;
+        color = 'rgba(34, 139, 34, 0.8)'; // 深绿色，更像圣诞树
+    } else if (i < particleCount * 0.85) {
+        // 树的装饰（红色小粒子）
+        const randomY = treeTopY + Math.random() * treeHeight;
+        const currentWidth = treeBaseWidth * (randomY - treeTopY) / treeHeight;
+        x = canvas.width / 2 + (Math.random() - 0.5) * currentWidth;
+        y = randomY;
+        color = 'rgba(255, 0, 0, 0.9)';
+    } else if (i < particleCount * 0.95) {
+        // 地面（树桩）
+        x = canvas.width / 2 + (Math.random() - 0.5) * (treeBaseWidth * 0.2);
+        y = treeTopY + treeHeight + Math.random() * (canvas.height * 0.1);
+        color = 'rgba(139, 69, 19, 0.8)'; // 棕色树桩
+    } else {
+        // 星星（树顶+夜空）
+        if (Math.random() < 0.2) {
+            // 树顶星星
+            x = canvas.width / 2 + (Math.random() - 0.5) * 20;
+            y = treeTopY + Math.random() * 30;
+        } else {
+            // 夜空星星
+            x = Math.random() * canvas.width;
+            y = Math.random() * (treeTopY - 50);
         }
+        color = 'rgba(255, 255, 0, 0.9)'; // 黄色星星
+    }
+    particles.push({
+        x,
+        y,
+        radius: Math.random() * 1.5 + 0.3,
+        color,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3
+    });
+}
 
         function animate() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
