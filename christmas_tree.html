@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python圣诞树</title>
+    <title>浪漫粒子圣诞树</title>
     <style>
         body {
             margin: 0;
@@ -15,11 +15,12 @@
         }
         .text {
             position: absolute;
-            top: 20%;
+            top: 15%;
             left: 10%;
             color: #fff;
             font-size: 24px;
             font-family: Arial, sans-serif;
+            opacity: 0.8;
         }
     </style>
 </head>
@@ -33,20 +34,34 @@
         canvas.height = window.innerHeight;
 
         const particles = [];
-        const particleCount = 15000; // 增加粒子数量，让效果更密集
+        const particleCount = 20000; // 增加粒子密度
         const treeColor = 'rgba(255, 100, 200, 0.8)'; // 粉紫色圣诞树
         const starColor = 'rgba(255, 255, 255, 0.6)'; // 白色星星
         const groundColor = 'rgba(255, 255, 255, 0.4)'; // 白色环形地面
+        const heartColor = 'rgba(255, 100, 150, 1)'; // 树顶爱心颜色
 
-        // 生成圣诞树粒子（贴近视频效果）
+        // 生成粒子
         for (let i = 0; i < particleCount; i++) {
             let x, y, color, radius, vx, vy;
-            if (i < particleCount * 0.6) {
-                // 圣诞树主体（锥形+分层，粉紫色）
+            if (i < particleCount * 0.01) {
+                // 树顶爱心
+                const heartX = canvas.width / 2;
+                const heartY = canvas.height / 2 - canvas.height * 0.35;
+                // 爱心粒子分布
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 20;
+                x = heartX + Math.cos(angle) * distance;
+                y = heartY + Math.sin(angle) * distance;
+                color = heartColor;
+                radius = Math.random() * 1.5 + 0.5;
+                vx = (Math.random() - 0.5) * 0.2;
+                vy = (Math.random() - 0.5) * 0.2;
+            } else if (i < particleCount * 0.6) {
+                // 圣诞树主体（分层锥形）
                 const treeHeight = canvas.height * 0.6;
-                const treeTopY = canvas.height / 2 - treeHeight / 2;
+                const treeTopY = canvas.height / 2 - treeHeight / 2 + 30; // 爱心下方
                 const randomY = treeTopY + Math.random() * treeHeight;
-                const layerWidth = treeHeight * 0.8 * (randomY - treeTopY) / treeHeight; // 分层宽度
+                const layerWidth = treeHeight * 0.8 * (randomY - treeTopY) / treeHeight;
                 x = canvas.width / 2 + (Math.random() - 0.5) * layerWidth;
                 y = randomY;
                 color = treeColor;
@@ -54,34 +69,23 @@
                 vx = (Math.random() - 0.5) * 0.3;
                 vy = (Math.random() - 0.5) * 0.3;
             } else if (i < particleCount * 0.8) {
-                // 环形地面（围绕圣诞树的白色粒子环）
+                // 环形地面
                 const centerX = canvas.width / 2;
                 const centerY = canvas.height / 2 + treeHeight / 2 + 50;
-                const radiusRange = canvas.width * 0.3; // 环形半径范围
+                const radiusRange = canvas.width * 0.4;
                 const angle = Math.random() * Math.PI * 2;
-                x = centerX + Math.cos(angle) * (radiusRange * 0.5 + Math.random() * radiusRange * 0.5);
-                y = centerY + Math.sin(angle) * (radiusRange * 0.2 + Math.random() * radiusRange * 0.3);
+                x = centerX + Math.cos(angle) * (radiusRange * 0.4 + Math.random() * radiusRange * 0.6);
+                y = centerY + Math.sin(angle) * (radiusRange * 0.1 + Math.random() * radiusRange * 0.4);
                 color = groundColor;
                 radius = Math.random() * 1 + 0.5;
                 vx = (Math.random() - 0.5) * 0.2;
                 vy = (Math.random() - 0.5) * 0.2;
             } else {
-                // 星星（随机分布在夜空，部分集中在树顶）
-                if (Math.random() < 0.1) {
-                    // 树顶星星
-                    const treeTopX = canvas.width / 2;
-                    const treeTopY = canvas.height / 2 - canvas.height * 0.3;
-                    x = treeTopX + (Math.random() - 0.5) * 30;
-                    y = treeTopY + (Math.random() - 0.5) * 30;
-                    color = 'rgba(255, 255, 255, 0.9)'; // 树顶星星更亮
-                    radius = Math.random() * 2 + 1;
-                } else {
-                    // 夜空星星
-                    x = Math.random() * canvas.width;
-                    y = Math.random() * canvas.height / 2;
-                    color = starColor;
-                    radius = Math.random() * 1 + 0.5;
-                }
+                // 星星
+                x = Math.random() * canvas.width;
+                y = Math.random() * canvas.height / 2;
+                color = starColor;
+                radius = Math.random() * 1 + 0.5;
                 vx = (Math.random() - 0.5) * 0.4;
                 vy = (Math.random() - 0.5) * 0.4;
             }
@@ -108,7 +112,6 @@
 
         animate();
 
-        // 窗口大小变化时重置画布
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
